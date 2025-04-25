@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, collection, getDocs, getDoc , addDoc, serverTimestamp } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -23,6 +23,11 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app)
 const db = getFirestore(app)
+const provider = new GoogleAuthProvider();
+
+//Sign in event handlers
+
+signInBtn.onclick = () => signInWithPopup(auth, provider);
 
 onAuthStateChanged(auth, user => {
   if(user != null) {
@@ -39,7 +44,10 @@ const submitBtn =  document.querySelector(".submitBtn")
 const lists = document.querySelector(".lists")
 
 
-submitBtn.addEventListener('click',addToList)
+submitBtn.addEventListener('click', ()=>{
+  addToList();
+  fetchList();
+})
 
 async function addToList(){
   const docRef = await addDoc(collection(db, "list"), {
